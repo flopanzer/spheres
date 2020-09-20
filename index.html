@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src=https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js></script>
     <style>
         html, body {
             overflow: hidden;
@@ -32,6 +33,8 @@
 
         BABYLON.SceneLoader.Load("", "spheres.glb", engine, function (scene) {
 
+            scene.debugLayer.show();
+
             var camera = new BABYLON.ArcRotateCamera("Camera", 1, 2, 20, BABYLON.Vector3.Zero(), scene);
             camera.setPosition(new BABYLON.Vector3(20, 0, 0));
             camera.attachControl(canvas, false);
@@ -39,6 +42,16 @@
             var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("photo_studio_01_1k.env", scene);
             scene.environmentTexture = hdrTexture;
             scene.clearColor = new BABYLON.Color3(1, 1, 1);
+
+
+            // curves
+            var origin = new BABYLON.Vector3(1,10,1);
+            var control = new BABYLON.Vector3(1,0,1);
+            var destination = new BABYLON.Vector3(1,1,10);
+
+            var bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin, control, destination, 30);
+            var bezier2 = BABYLON.MeshBuilder.CreateLines("curve",{points: bezier2.getPoints()}, scene);
+            bezier2.color = new BABYLON.Color3(0,0,0);
 
             engine.runRenderLoop(function() {
                 scene.render();
