@@ -1,11 +1,9 @@
 <!doctype html>
 <html>
 <head>
-    <title>Default .babylon loading scene</title>
+    <title>Spheres</title>
     <meta charset="UTF-8">
-    <!-- this link to the preview online version of BJS -->
     <script src="https://preview.babylonjs.com/babylon.js"></script>
-    <!-- this is needed for BJS to load scene files -->
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
     <style>
         html, body {
@@ -32,15 +30,15 @@
         var canvas = document.getElementById("canvas");
         var engine = new BABYLON.Engine(canvas, true);
 
-        // here the doc for Load function: //doc.babylonjs.com/api/classes/babylon.sceneloader#load
-        BABYLON.SceneLoader.Load("", "babylonJS_logo_v3.babylon", engine, function (scene) {
+        BABYLON.SceneLoader.Load("", "spheres.glb", engine, function (scene) {
 
-            //as this .babylon example hasn't camera in it, we have to create one
-            var camera = new BABYLON.ArcRotateCamera("Camera", 1, 1, 4, BABYLON.Vector3.Zero(), scene);
+            var camera = new BABYLON.ArcRotateCamera("Camera", 1, 2, 20, BABYLON.Vector3.Zero(), scene);
+            camera.setPosition(new BABYLON.Vector3(20, 0, 0));
             camera.attachControl(canvas, false);
 
+            var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("photo_studio_01_1k.env", scene);
+            scene.environmentTexture = hdrTexture;
             scene.clearColor = new BABYLON.Color3(1, 1, 1);
-            scene.ambientColor = new BABYLON.Color3.White;
 
             engine.runRenderLoop(function() {
                 scene.render();
