@@ -45,9 +45,12 @@
 
 
             // curves
-            var origin = new BABYLON.Vector3(1,10,1);
-            var control = new BABYLON.Vector3(1,0,1);
-            var destination = new BABYLON.Vector3(1,1,10);
+            var origin = scene.getMeshByName("white.001").position;
+            var control = scene.getMeshByName("blue").position;
+            var destination = scene.getMeshByName("white").position;
+
+            console.log(scene.getMeshByName("black").position);
+
 
             var bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin, control, destination, 30);
             var bezier2 = BABYLON.MeshBuilder.CreateLines("curve",{points: bezier2.getPoints()}, scene);
