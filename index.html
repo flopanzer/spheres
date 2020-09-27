@@ -80,7 +80,7 @@
 
             var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("photo_studio_01_1k.env", scene);
             scene.environmentTexture = hdrTexture;
-            // scene.clearColor = new BABYLON.Color3(1, 1, 1);
+            scene.clearColor = new BABYLON.Color3(1, 1, 1);
 
             // curves
             var origin = scene.getMeshByName("white.001");
@@ -88,11 +88,12 @@
             var destination = scene.getMeshByName("white");
 
             var whiteSphere = scene.getMeshByName("white.001")
-            animate(whiteSphere, scene, 1, 100);
+            animate(whiteSphere, scene, 0.5, 50);
 
             var bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin.position, control.position, destination.position, 30);
             var curvePoints = bezier2.getPoints()
             var lines = BABYLON.MeshBuilder.CreateLines("curve",{points: curvePoints, updatable: true }, scene);
+            lines.color = new BABYLON.Color3(0.5,0.5,0.5);
 
             // 3D path alternative
             // var points = [];
