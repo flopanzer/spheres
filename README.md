@@ -1,2 +1,2 @@
 # spheres
-webgl illustration with spheres and spines 
+webgl illustration with spheres and splines 
