@@ -32,42 +32,41 @@
         var engine = new BABYLON.Engine(canvas, true);
         var path3d = null;
 
-        function animate(obj, scene){
-            var animationSphere = new BABYLON.Animation("animSphere", 
-                                                        "position.y", 
+        function animate(obj, scene, amplitude, time){
+
+            let animationSphere = new BABYLON.Animation("animSphere", 
+                                                        "position", 
                                                         10, 
-                                                        BABYLON.Animation.ANIMATIONTYPE_FLOAT, 
+                                                        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
                                                         BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
-            var keys = []; 
-
+            let keys = []; 
             keys.push({
                 frame: 0,
-                value: 0
+                value: new BABYLON.Vector3.Zero()
             });
-
             keys.push({
-                frame: 50,
-                value: 5
+                frame: time/2,
+                value: new BABYLON.Vector3(0,amplitude,0)
             });
-
             keys.push({
-                frame: 100,
-                value: 0
+                frame: time,
+                value: new BABYLON.Vector3.Zero()
+            });
+            keys.push({
+                frame: time + (time/2),
+                value: new BABYLON.Vector3.Zero()
             });
 
             animationSphere.setKeys(keys);
-            obj.animations = [];
-
-            // // Creating an easing function
-            var easingFunction = new BABYLON.SineEase();
-            // // For each easing function, you can choose between EASEIN (default), EASEOUT, EASEINOUT
+            
+            let easingFunction = new BABYLON.SineEase();
             easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-            // // Adding the easing function to the animation
             animationSphere.setEasingFunction(easingFunction);
 
+            obj.animations = [];
             obj.animations.push(animationSphere);
-            scene.beginAnimation(obj, 0, 100, true);
+            scene.beginAnimation(obj, 0, time, true);
         };
 
 
@@ -81,32 +80,35 @@
 
             var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("photo_studio_01_1k.env", scene);
             scene.environmentTexture = hdrTexture;
-            scene.clearColor = new BABYLON.Color3(1, 1, 1);
+            // scene.clearColor = new BABYLON.Color3(1, 1, 1);
 
             // curves
-            var origin = scene.getMeshByName("white.001").position;
-            var control = scene.getMeshByName("blue").position;
-            var destination = scene.getMeshByName("white").position;
+            var origin = scene.getMeshByName("white.001");
+            var control = scene.getMeshByName("blue");
+            var destination = scene.getMeshByName("white");
 
             var whiteSphere = scene.getMeshByName("white.001")
-            (whiteSphere,scene);
+            animate(whiteSphere, scene, 1, 100);
 
-            // var bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin, control, destination, 30);
-            // bezier2 = BABYLON.MeshBuilder.CreateLines("curve",{points: bezier2.getPoints()}, scene);
-            // bezier2.color = new BABYLON.Color3(0,0,0);
+            var bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin.position, control.position, destination.position, 30);
+            var curvePoints = bezier2.getPoints()
+            var lines = BABYLON.MeshBuilder.CreateLines("curve",{points: curvePoints, updatable: true }, scene);
 
-            var points = [];
-            points.push(origin);
-            points.push(control);
-            points.push(destination);
-            console.log(points);
 
-            path3d = new BABYLON.Path3D(points);
-            var curve = path3d.getCurve();
-            var li = new BABYLON.Mesh.CreateLines('li', curve, scene);
-            li.color = new BABYLON.Color3(0,0,0);
+            // 3D path alternative
+            // var points = [];
+            // points.push(origin);
+            // points.push(control);
+            // points.push(destination);
+            // path3d = new BABYLON.Path3D(points);
+            // var curve = path3d.getCurve();
+            // var li = new BABYLON.Mesh.CreateLines('li', curve, scene);
+            // li.color = new BABYLON.Color3(0,0,0);
 
             scene.registerBeforeRender(function () {
+                bezier2 = BABYLON.Curve3.CreateQuadraticBezier(origin.position, control.position, destination.position, 30);
+                curvePoints = bezier2.getPoints()
+                BABYLON.MeshBuilder.CreateLines("curve",{points: curvePoints, updatable: true, instance: lines }, scene);
             });
 
             engine.runRenderLoop(function() {
