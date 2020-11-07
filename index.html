@@ -76,11 +76,20 @@
 
             var camera = new BABYLON.ArcRotateCamera("Camera", 1, 2, 20, BABYLON.Vector3.Zero(), scene);
             camera.setPosition(new BABYLON.Vector3(20, 0, 0));
-            camera.attachControl(canvas, false);
+            // camera.attachControl(canvas, false);
 
             var hdrTexture = new BABYLON.CubeTexture.CreateFromPrefilteredData("photo_studio_01_1k.env", scene);
             scene.environmentTexture = hdrTexture;
             scene.clearColor = new BABYLON.Color3(1, 1, 1);
+
+            // drag and move behavior
+            for (var mesh of scene.meshes){ // 'of'insteat of  'in' returns objects
+                console.log(mesh.name);
+                if(mesh.name != "__root__"){
+                    var pointerDragBehavior = new BABYLON.PointerDragBehavior();
+                    mesh.addBehavior(pointerDragBehavior);
+                }
+            }
 
             // curves
             var origin = scene.getMeshByName("white.001");
